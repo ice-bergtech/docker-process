@@ -1,0 +1,104 @@
+version: '3'
+
+services:
+
+  image-pixelsort:
+    image: image-pixelsort
+    build: dockerfiles/image-pixelsort.dockerfile
+    restart: never
+    volumes:
+      - "./input:/data/input"
+      - "./output:/data/output"
+    environment:
+      - IN_FILE=input.jpg
+      - OUT_FILE=output.jpg
+        # Options: random,edges,threshold(default),waves,file,file-edges,none
+      - INTERVAL=threshold
+      - RANDOMNESS=0
+      - THRESHOLD_L=0.25
+      - THRESHOLD_U=0.8
+      - CHAR_LEN=50
+      - ANGLE=0
+        # Options: lightness(default),hue,saturation,intensity,minimum
+      - SORTING=Lightness
+
+  image-pixelsort-mask:
+    image: image-pixelsort
+    build: dockerfiles/image-pixelsort.dockerfile
+    restart: never
+    volumes:
+      - "./input:/data/input"
+      - "./output:/data/output"
+    environment:
+      - IN_FILE=input.jpg
+      - OUT_FILE=output.jpg
+        # Options: random,edges,threshold(default),waves,file,file-edges,none
+      - INTERVAL=threshold
+      - RANDOMNESS=0
+      - THRESHOLD_L=0.25
+      - THRESHOLD_U=0.8
+      - CHAR_LEN=50
+      - ANGLE=0
+        # Options: lightness(default),hue,saturation,intensity,minimum
+      - SORTING=Lightness
+      - MASK='/data/input/mask.jpg'
+
+    command: ["pixelsort","/data/input/$${IN_FILE}", \
+      "--int_function",    "$${INTERVAL}", \
+      "--output",          "$${OUT_FILE}", \
+      "--randomness",      "$${RANDOMNESS}", \
+      "--threshold",       "$${THRESHOLD_L}", \
+      "--upper_threshold", "$${THRESHOLD_U}", \
+      "--char_length",     "$${CHAR_LEN}", \
+      "--angle",           "$${ANGLE}", \
+      "--sorting_function","$${SORTING}", \
+      "--mask",            "$${MASK}", \
+    ]
+  
+  image-pixelsort-interval:
+    image: image-pixelsort
+    build: dockerfiles/image-pixelsort.dockerfile
+    restart: never
+    volumes:
+      - "./input:/data/input"
+      - "./output:/data/output"
+    environment:
+      - IN_FILE=input.jpg
+      - OUT_FILE=output.jpg
+        # Options: random,edges,threshold(default),waves,file,file-edges,none
+      - INTERVAL=threshold
+      - RANDOMNESS=0
+      - THRESHOLD_L=0.25
+      - THRESHOLD_U=0.8
+      - CHAR_LEN=50
+      - ANGLE=0
+        # Options: lightness(default),hue,saturation,intensity,minimum
+      - SORTING=Lightness
+      - EXT_INTERVAL='/data/input/interval.jpg'
+
+    command: ["pixelsort","/data/input/$${IN_FILE}", \
+      "--int_function",    "$${INTERVAL}", \
+      "--output",          "$${OUT_FILE}", \
+      "--randomness",      "$${RANDOMNESS}", \
+      "--threshold",       "$${THRESHOLD_L}", \
+      "--upper_threshold", "$${THRESHOLD_U}", \
+      "--char_length",     "$${CHAR_LEN}", \
+      "--angle",           "$${ANGLE}", \
+      "--sorting_function","$${SORTING}", \
+      "--int_file",        "$${EXT_INTERVAL}", \
+    ]
+
+  audio-to-midi:
+    image: audio-to-midi
+    build:
+      context: .
+      dockerfile: ./dockerfiles/audio-convert-midi.dockerfile
+    restart: never
+    volumes:
+      - "./input:/data/input"
+      - "./output:/data/output"
+    environment:
+      - IN_FILE=Space_Fantasy.mp3
+      - OUT_FILE=output.mid
+    #command: audio-to-midi /data/input/Space_Fantasy.mp3 -b 120 -t 30 -o /data/output/output.mid
+
