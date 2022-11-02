@@ -1,5 +1,38 @@
 # docker-process
+
 A collection of short-lived docker containers that process various types of files.
+Information about each module is described in the service labels
+
+## Steps
+
+1. Normalize inputs
+   1. format audio (non mp3)
+2. generate metadata
+   1. bpm, scenes, shots
+   2. label inputs
+3. Perform transformations
+   1. perform actions on input and intermediate data
+   2. pixelsorting
+   3. effects
+   4. combination
+4. loop or export
+   1. start from 1 or export final media object
+
+
+### Normalizing inputs
+
+Formatting
+
+### Generate Metadata
+
+for each file in input, run it through different metadata generators for use as supplemental information.
+
+bpm, scenes, shots
+   2. label inputs
+
+
+
+
 
 ## Images
 

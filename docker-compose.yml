@@ -4,14 +4,16 @@ services:
 
   image-pixelsort:
     image: image-pixelsort
-    build: dockerfiles/image-pixelsort.dockerfile
+    build:
+      context: .
+      dockerfile: ./dockerfiles/image-pixelsort.dockerfile
     restart: never
     volumes:
       - "./input:/data/input"
       - "./output:/data/output"
     environment:
-      - IN_FILE=input.jpg
-      - OUT_FILE=output.jpg
+      - IN_FILE=d5ckyusuag781.jpg
+      - OUT_FILE=ps_output_.png
         # Options: random,edges,threshold(default),waves,file,file-edges,none
       - INTERVAL=threshold
       - RANDOMNESS=0
@@ -21,10 +23,14 @@ services:
       - ANGLE=0
         # Options: lightness(default),hue,saturation,intensity,minimum
       - SORTING=Lightness
+    #command: python -m pixelsort /data/input/${IN_FILE} --int_function  ${INTERVAL} --output ${OUT_FILE} --randomness ${RANDOMNESS} --threshold ${THRESHOLD_L} --upper_threshold ${THRESHOLD_U} --char_length ${CHAR_LEN} --angle ${ANGLE} --sorting_function ${SORTING}
+    command: python -m pixelsort /data/input/d5ckyusuag781.jpg --int_function threshold --output /data/output/ps_output_.png --randomness 0 --threshold 0.25 --upper_threshold 0.8 --angle 90 --sorting_function lightness
 
   image-pixelsort-mask:
     image: image-pixelsort
-    build: dockerfiles/image-pixelsort.dockerfile
+    build:
+      context: .
+      dockerfile: ./dockerfiles/image-pixelsort.dockerfile
     restart: never
     volumes:
       - "./input:/data/input"
@@ -57,14 +63,16 @@ services:
   
   image-pixelsort-interval:
     image: image-pixelsort
-    build: dockerfiles/image-pixelsort.dockerfile
+    build:
+      context: .
+      dockerfile: ./dockerfiles/image-pixelsort.dockerfile
     restart: never
     volumes:
       - "./input:/data/input"
       - "./output:/data/output"
     environment:
-      - IN_FILE=input.jpg
-      - OUT_FILE=output.jpg
+      - IN_FILE=d5ckyusuag781.jpg
+      - OUT_FILE=ps_output_.jpg
         # Options: random,edges,threshold(default),waves,file,file-edges,none
       - INTERVAL=threshold
       - RANDOMNESS=0
@@ -87,6 +95,8 @@ services:
       "--sorting_function","$${SORTING}", \
       "--int_file",        "$${EXT_INTERVAL}", \
     ]
+    labels:
+      - com.host.description=label
 
   audio-to-midi:
     image: audio-to-midi
@@ -98,7 +108,7 @@ services:
       - "./input:/data/input"
       - "./output:/data/output"
     environment:
-      - IN_FILE=Space_Fantasy.mp3
+      - IN_FILE=song.wav
       - OUT_FILE=output.mid
-    #command: audio-to-midi /data/input/Space_Fantasy.mp3 -b 120 -t 30 -o /data/output/output.mid
+    command: audio-to-midi /data/input/song.wav -b 148 -t 30 --condense -o /data/output/output_148_30_c.mid
 
